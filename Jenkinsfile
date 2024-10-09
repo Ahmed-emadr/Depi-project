@@ -1,18 +1,37 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                script {
-                    sh 'docker build -t simple-flask-app .'
-                }
+                git 'https://your-repo-url.git' // Adjust this to your repo URL
+            }
+        }
+        stage('Check Python and Pip') {
+            steps {
+                sh 'python3 --version'
+                sh 'pip3 --version'
+            }
+        }
+        stage('Setup Python Environment') {
+            steps {
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install -r requirements.txt
+                '''
             }
         }
         stage('Test') {
             steps {
                 script {
-                    sh 'pip install -r requirements.txt'
-                    sh 'pytest test_app.py'
+                    sh '. venv/bin/activate && pytest test_app.py'
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    sh 'docker build -t simple-flask-app .'
                 }
             }
         }
@@ -22,14 +41,6 @@ pipeline {
                     sh 'docker run -d -p 5000:5000 simple-flask-app'
                 }
             }
-        }
-    }
-    post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
         }
     }
 }
