@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://your-repo-url.git' // Adjust this to your repo URL
+                git 'https://github.com/Ahmed-emadr/Depi-project.git' // Adjust this to your repo URL
             }
         }
         stage('Check Python and Pip') {
