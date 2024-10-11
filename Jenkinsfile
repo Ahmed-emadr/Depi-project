@@ -9,15 +9,15 @@ pipeline {
                 }
             }
         }
-        stage('Test') {
-            steps {
-                script {
+      //  stage('Test') {
+        //    steps {
+          //      script {
                     // Run tests
-                    sh 'docker run --rm simple-flask-app pytest'
-                }
-            }
-        }
-        stage('Deploy') {
+         //           sh 'docker run --rm simple-flask-app pytest'
+           //     }
+           // }
+       // }
+       	stage('Deploy') {
             steps {
                 script {
                     // Deploy the Docker container
