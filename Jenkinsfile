@@ -1,34 +1,26 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                git 'https://github.com/Ahmed-emadr/Depi-project.git' // Adjust this to your repo URL
-            }
-        }
-        stage('Check Python and Pip') {
-            steps {
-                sh 'python3 --version'
-                sh 'pip3 --version'
+                script {
+                    // Build Docker image
+                    sh 'docker build -t simple-flask-app .'
+                }
             }
         }
         stage('Test') {
             steps {
                 script {
-                    sh '. pytest test_app.py'
-                }
-            }
-        }
-        stage('Build') {
-            steps {
-                script {
-                    sh 'docker build -t simple-flask-app .'
+                    // Run tests
+                    sh 'docker run --rm simple-flask-app pytest'
                 }
             }
         }
         stage('Deploy') {
             steps {
                 script {
+                    // Deploy the Docker container
                     sh 'docker run -d -p 5000:5000 simple-flask-app'
                 }
             }
