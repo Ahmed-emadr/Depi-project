@@ -12,30 +12,24 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                     Run tests
+                    // Run tests
                     sh 'docker run --rm simple-flask-app pytest'
                 }
             }
         }
-
-	post {
-            success {
-                emailext(
-                     subject: "Pipeline Success: ${env.JOB_NAME}",
-                     body: "The pipeline has completed successfully.",
-                     to: "mostafakhaledmostafa00@gmail.com"
-        )
-    }
-            failure {
-                emailext(
-                     subject: "Pipeline Failure: ${env.JOB_NAME}",
-                     body: "The pipeline has failed.",
-                     to: "mostafakhaledmostafa00@gmail.com"
-        )
-    }
-}
-
-       	stage('Deploy') {
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    // Log in to Docker Hub
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
+                        // Push the Docker image to Docker Hub
+                        sh 'docker tag simple-flask-app your-dockerhub-username/simple-flask-app:${env.BUILD_ID}'
+                        sh 'docker push your-dockerhub-username/simple-flask-app:${env.BUILD_ID}'
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
             steps {
                 script {
                     // Deploy the Docker container
@@ -44,5 +38,20 @@ pipeline {
             }
         }
     }
+    post {
+        success {
+            emailext(
+                subject: "Pipeline Success: ${env.JOB_NAME}",
+                body: "The pipeline has completed successfully.",
+                to: "mostafakhaledmostafa00@gmail.com"
+            )
+        }
+        failure {
+            emailext(
+                subject: "Pipeline Failure: ${env.JOB_NAME}",
+                body: "The pipeline has failed.",
+                to: "mostafakhaledmostafa00@gmail.com"
+            )
+        }
+    }
 }
-
