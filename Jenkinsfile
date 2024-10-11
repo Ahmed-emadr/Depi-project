@@ -3,6 +3,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
         DOCKER_IMAGE = 'ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
+        EC2_IP = '18.213.248.29' // Replace with your EC2 instance's public IP
     }
     stages {
         stage('Build') {
@@ -34,11 +35,20 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Deploy to EC2') {
             steps {
                 script {
-                    // Deploy the Docker container
-                    sh "docker run -d --name simple-flask-app -p 5000:5000 ${DOCKER_IMAGE}"
+                    // SSH into EC2 instance and deploy
+                    sshagent(['ec2-ssh-key']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} << EOF
+                                docker pull ${DOCKER_IMAGE}
+                                docker stop simple-flask-app || true
+                                docker rm simple-flask-app || true
+                                docker run -d --name simple-flask-app -p 5000:5000 ${DOCKER_IMAGE}
+                            EOF
+                        """
+                    }
                 }
             }
         }
