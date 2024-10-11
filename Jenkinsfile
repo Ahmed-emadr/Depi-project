@@ -17,18 +17,18 @@ pipeline {
                 }
             }
         }
-        stage('Push to Docker Hub') {
-            steps {
-                script {
-                    // Log in to Docker Hub
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
-                        // Push the Docker image to Docker Hub
-                        sh 'docker tag simple-flask-app your-dockerhub-username/simple-flask-app:${env.BUILD_ID}'
-                        sh 'docker push your-dockerhub-username/simple-flask-app:${env.BUILD_ID}'
-                    }
-                }
-            }
-        }
+        // stage('Push to Docker Hub') {
+        //     steps {
+        //         script {
+        //             // Log in to Docker Hub
+        //             //docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
+        //                 // Push the Docker image to Docker Hub
+        //                 //sh 'docker tag simple-flask-app your-dockerhub-username/simple-flask-app:${env.BUILD_ID}'
+        //                 //sh 'docker push your-dockerhub-username/simple-flask-app:${env.BUILD_ID}'
+        //             }
+        //         }
+        //     }
+        // }
         stage('Deploy') {
             steps {
                 script {
