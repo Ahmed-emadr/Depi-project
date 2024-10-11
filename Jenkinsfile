@@ -12,21 +12,10 @@ pipeline {
                 sh 'pip3 --version'
             }
         }
-        stage('Setup Python Environment') {
-            steps {
-                // Use bash explicitly
-                sh '''
-                #!/bin/bash
-                python3 -m venv venv
-                source venv/bin/activate
-                pip install --break-system-packages -r requirements.txt
-                '''
-            }
-        }
         stage('Test') {
             steps {
                 script {
-                    sh '. venv/bin/activate && pytest test_app.py'
+                    sh '. pytest test_app.py'
                 }
             }
         }
