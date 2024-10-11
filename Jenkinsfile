@@ -5,7 +5,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    sh 'docker build -t simple-flask-app .'
+                    sh 'docker build --no-cache -t simple-flask-app .'
                 }
             }
         }
