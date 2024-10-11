@@ -3,6 +3,8 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
         DOCKER_IMAGE = 'ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
+        ANSIBLE_PLAYBOOK = '/home/emad/depi-project/simple-flask-app/deploy.yml' // Path to your Ansible playbook
+        ANSIBLE_INVENTORY = '/home/emad/depi-project/simple-flask-app/inventory.ini' // Path to your Ansible inventory file
     }
     stages {
         stage('Build') {
@@ -34,11 +36,13 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Deploy with Ansible') {
             steps {
                 script {
-                    // Deploy the Docker container
-                    sh "docker run -d --name simple-flask-app -p 5000:5000 ${DOCKER_IMAGE}"
+                    // Run the Ansible playbook
+                    sh """
+                    ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOK} --extra-vars "docker_image=${DOCKER_IMAGE}"
+                    """
                 }
             }
         }
