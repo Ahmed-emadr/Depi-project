@@ -39,19 +39,11 @@ pipeline {
         }
     }
     post {
-        success {
-            emailext(
-                subject: "Pipeline Success: ${env.JOB_NAME}",
-                body: "The pipeline has completed successfully.",
-                to: "emadrar15@gmail.com"
-            )
-        }
-        failure {
-            emailext(
-                subject: "Pipeline Failure: ${env.JOB_NAME}",
-                body: "The pipeline has failed.",
-                to: "emadrar15@gmail.com"
-            )
-        }
+    success {
+        slackSend(channel: '#deploy', message: "Pipeline ${env.JOB_NAME} succeeded!")
+    }
+    failure {
+        slackSend(channel: '#deploy', message: "Pipeline ${env.JOB_NAME} failed!")
     }
 }
+
