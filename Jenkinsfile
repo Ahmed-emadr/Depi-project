@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
-        DOCKER_IMAGE = 'docker push ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
+        DOCKER_IMAGE = 'ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
     }
     stages {
         stage('Build') {
@@ -54,13 +54,6 @@ pipeline {
         }
     }
     post {
-<<<<<<< HEAD
-    success {
-        slackSend(channel: '#deploy', message: "Pipeline ${env.JOB_NAME} succeeded!")
-    }
-    failure {
-        slackSend(channel: '#deploy', message: "Pipeline ${env.JOB_NAME} failed!")
-=======
         success {
             emailext(
                 subject: "Pipeline Success: ${env.JOB_NAME}",
@@ -75,7 +68,5 @@ pipeline {
                 to: "mostafakhaledmostafa00@gmail.com"
             )
         }
->>>>>>> 615abf94ac50658f994e2b8d201d265d67d59e43
     }
 }
-
