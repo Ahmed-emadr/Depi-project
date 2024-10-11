@@ -17,6 +17,24 @@ pipeline {
                 }
             }
         }
+
+post {
+    success {
+        emailext(
+            subject: "Pipeline Success: ${env.JOB_NAME}",
+            body: "The pipeline has completed successfully.",
+            to: "mostafakhaledmostafa00@gmail.com"
+        )
+    }
+    failure {
+        emailext(
+            subject: "Pipeline Failure: ${env.JOB_NAME}",
+            body: "The pipeline has failed.",
+            to: "mostafakhaledmostafa00@gmail.com"
+        )
+    }
+}
+
        	stage('Deploy') {
             steps {
                 script {
