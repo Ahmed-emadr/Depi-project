@@ -3,8 +3,8 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
         DOCKER_IMAGE = 'ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
-        ANSIBLE_PLAYBOOK = '/home/emad/depi-project/simple-flask-app/deploy.yml' // Path to your Ansible playbook
-        ANSIBLE_INVENTORY = '/home/emad/depi-project/simple-flask-app/inventory.ini' // Path to your Ansible inventory file
+        ANSIBLE_PLAYBOOK = 'deploy.yml' // Path to your Ansible playbook
+        ANSIBLE_INVENTORY 'inventory.ini' // Path to your Ansible inventory file
     }
     stages {
         stage('Build') {
