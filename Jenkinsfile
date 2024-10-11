@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://your-repo-url.git' // Adjust this to your repo URL
+                git 'https://github.com/Ahmed-emadr/Depi-project.git' // Adjust this to your repo URL
             }
         }
         stage('Check Python and Pip') {
@@ -15,9 +15,10 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 sh '''
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    pip install -r requirements.txt
+                    python3 -m venv venv 
+                    source venv/bin/activate
+		    pip install --break-system-packages -r requirements.txt
+
                 '''
             }
         }
