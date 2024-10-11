@@ -1,11 +1,15 @@
 pipeline {
     agent any
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
+        DOCKER_IMAGE = 'docker push ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
+    }
     stages {
         stage('Build') {
             steps {
                 script {
                     // Build Docker image
-                    sh 'docker build --no-cache -t simple-flask-app .'
+                    sh 'docker build --no-cache -t ${DOCKER_IMAGE} .'
                 }
             }
         }
@@ -13,27 +17,38 @@ pipeline {
             steps {
                 script {
                     // Run tests
-                    sh 'docker run --rm simple-flask-app pytest'
+                    sh 'docker run --rm ${DOCKER_IMAGE} pytest'
                 }
             }
         }
-        // stage('Push to Docker Hub') {
-        //     steps {
-        //         script {
-        //             // Log in to Docker Hub
-        //             //docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
-        //                 // Push the Docker image to Docker Hub
-        //                 //sh 'docker tag simple-flask-app your-dockerhub-username/simple-flask-app:${env.BUILD_ID}'
-        //                 //sh 'docker push your-dockerhub-username/simple-flask-app:${env.BUILD_ID}'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Stop & Remove Existing Container') {
+            steps {
+                script {
+                    // Stop and remove the existing container if it's running
+                    sh '''
+                        if [ "$(docker ps -q -f name=simple-flask-app)" ]; then
+                            docker stop simple-flask-app
+                            docker rm simple-flask-app
+                        fi
+                    '''
+                }
+            }
+        }
         stage('Deploy') {
             steps {
                 script {
                     // Deploy the Docker container
-                    sh 'docker run -d -p 5000:5000 simple-flask-app'
+                    sh "docker run -d --name simple-flask-app -p 5000:5000 ${DOCKER_IMAGE}"
+                }
+            }
+        }
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    // Log in to Docker Hub
+                    sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                    // Push the Docker image
+                    sh "docker push ${DOCKER_IMAGE}"
                 }
             }
         }
@@ -43,14 +58,14 @@ pipeline {
             emailext(
                 subject: "Pipeline Success: ${env.JOB_NAME}",
                 body: "The pipeline has completed successfully.",
-                to: "emadrar15@gmail.com"
+                to: "mostafakhaledmostafa00@gmail.com"
             )
         }
         failure {
             emailext(
                 subject: "Pipeline Failure: ${env.JOB_NAME}",
                 body: "The pipeline has failed.",
-                to: "emadrar15@gmail.com"
+                to: "mostafakhaledmostafa00@gmail.com"
             )
         }
     }
