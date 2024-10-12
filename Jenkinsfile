@@ -52,6 +52,7 @@ pipeline {
                     sh 'git config --global user.email "emadrar15@gmail.com"'  // Set your git user email
                     sh 'git config --global user.name "Ahmed-emadr"'         // Set your git user name
 
+<<<<<<< HEAD
                     sh '''
 			    if [ -n "$(git status --porcelain)" ]; then
         			git add .
@@ -61,6 +62,10 @@ pipeline {
     			    fi
 					'''
       
+=======
+                    sh 'git add .'                                         // Stage all changes
+                    sh 'git commit -m "Automated commit by Jenkins"'       // Commit the changes
+>>>>>>> ff61f1df46c4b63f22916f1582f06daae91f145c
                     sh 'git push origin ${GIT_BRANCH}'                     // Push to the target branch
                 }
             }
