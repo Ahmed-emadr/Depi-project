@@ -48,7 +48,7 @@ pipeline {
         // Git add, commit, and push stage
         stage('Git Add, Commit, and Push') {
             steps {
-                sshagent(['your-ssh-credentials-id']) {   // Use SSH agent for GitHub authentication
+                sshagent(['token']) {   // Use SSH agent for GitHub authentication
                     sh 'git config --global user.email "emadrar15@gmail.com"'  // Set your git user email
                     sh 'git config --global user.name "Ahmed-emadr"'         // Set your git user name
 
