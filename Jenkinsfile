@@ -3,6 +3,8 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
         DOCKER_IMAGE = 'ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
+        GIT_CREDENTIALS_ID = 'git'  // Set your Jenkins SSH credentials ID here
+        GIT_BRANCH = 'master'                             // Replace with your target branch
     }
     stages {
         stage('Build') {
@@ -42,6 +44,21 @@ pipeline {
                 }
             }
         }
+
+        // Git add, commit, and push stage
+        stage('Git Add, Commit, and Push') {
+            steps {
+                sshagent(['your-ssh-credentials-id']) {   // Use SSH agent for GitHub authentication
+                    sh 'git config --global user.email "emadrar15@gmail.com"'  // Set your git user email
+                    sh 'git config --global user.name "Ahmed-emadr"'         // Set your git user name
+
+                    sh 'git add .'                                         // Stage all changes
+                    sh 'git commit -m "Automated commit by Jenkins"'       // Commit the changes
+                    sh 'git push origin ${GIT_BRANCH}'                     // Push to the target branch
+                }
+            }
+        }
+
         stage('Push to Docker Hub') {
             steps {
                 script {
