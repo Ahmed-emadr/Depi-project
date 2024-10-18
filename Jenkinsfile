@@ -11,7 +11,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    env.DOCKER_IMAGE = "${IMAGE_NAME}:${DOCKER_TAG}"
+                    env.DOCKER_IMAGE = "${DOCKER_IMAGE}:${DOCKER_TAG}"
                 }
             }
         }
