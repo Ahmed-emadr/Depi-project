@@ -3,7 +3,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
         DOCKER_IMAGE = 'ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
-        DOCKER_TAG = ${GIT_COMMIT}
+        DOCKER_TAG = "${GIT_COMMIT}"
         
     }
     stages {
