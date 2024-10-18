@@ -3,14 +3,14 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
         DOCKER_IMAGE = 'ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
-        DOCKER_IMAGE = "${IMAGE_NAME}:${BUILD_NUMBER}"
+        
     }
     stages {
         stage('Build') {
             steps {
                 script {
                     // Build Docker image
-                    sh 'docker build --no-cache -t ${DOCKER_IMAGE} .'
+                    env.DOCKER_IMAGE = "${IMAGE_NAME}:${BUILD_NUMBER}"
                 }
             }
         }
