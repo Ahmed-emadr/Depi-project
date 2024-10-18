@@ -24,20 +24,23 @@ pipeline {
             }
         }
         stage('Kubernetes Deployment') {
-            steps {
-                script {
-                    // Write kubeconfig to a file securely
-                    writeFile file: '/tmp/kubeconfig', text: "${KUBECONFIG_CREDENTIALS.getPlainText()}"
-                    env.KUBECONFIG = '/tmp/kubeconfig'
+    steps {
+        script {
+            // Securely write kubeconfig to a file
+            withCredentials([file(credentialsId: 'kubeconfig-id', variable: 'KUBECONFIG_FILE')]) {
+                sh 'cp $KUBECONFIG_FILE /tmp/kubeconfig'
+                env.KUBECONFIG = '/tmp/kubeconfig'
 
-                    // Verify kubeconfig
-                    sh 'kubectl config view'
+                // Verify kubeconfig
+                sh 'kubectl config view'
 
-                    // Apply Kubernetes deployment
-                    sh 'kubectl apply -f /home/emad/depi-project/simple-flask-app/deployment.yaml' // Update with your deployment file path
-                }
+                // Apply Kubernetes deployment
+                sh 'kubectl apply -f k8s/deployment.yaml' // Update with your deployment file path
             }
         }
+    }
+}
+
         stage('Stop & Remove Existing Container') {
             steps {
                 script {
