@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
-        DOCKER_IMAGE = 'ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
+        DOCKER_IMAGE = 'ahmedaemadra/depi-20depi-2066' // Replace with your Docker Hub image name
         DOCKER_TAG = "${GIT_COMMIT}"
         
     }
@@ -11,7 +11,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    env.DOCKER_IMAGE = "${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    sh 'docker build --no-cache -t ${DOCKER_IMAGE} .'
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     // Deploy the Docker container
-                    sh "docker run -d --name simple-flask-app -p 5000:5000 ${DOCKER_IMAGE}"
+                    sh "docker run -d --name simple-flask-app -p 5000:5000 ${DOCKER_IMAGE}:${DOCKER_TAG}"
                 }
             }
         }
@@ -50,7 +50,7 @@ pipeline {
                     // Log in to Docker Hub
                     sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
                     // Push the Docker image
-                    sh "docker push ${DOCKER_IMAGE}"
+                    sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
                 }
             }
         }
