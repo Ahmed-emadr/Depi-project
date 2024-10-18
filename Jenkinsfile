@@ -11,7 +11,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    sh 'docker build --no-cache -t ${DOCKER_IMAGE} .'
+                    sh 'docker build --no-cache -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
                 }
             }
         }
