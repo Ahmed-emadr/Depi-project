@@ -55,6 +55,20 @@ pipeline {
             }
         }
     }
+    stage('Kubernetes Deployment') {
+    steps {
+        script {
+            withCredentials([file(credentialsId: 'kubeconfig-id', variable: 'KUBECONFIG')]) {
+                sh '''
+                    kubectl --kubeconfig=$KUBECONFIG set image deployment/${DEPLOYMENT_NAME} \
+                    ${DEPLOYMENT_NAME}=${DOCKER_IMAGE}:${DOCKER_TAG} --namespace=${NAMESPACE}
+                    kubectl --kubeconfig=$KUBECONFIG rollout status deployment/${DEPLOYMENT_NAME} --namespace=${NAMESPACE}
+                '''
+            }
+        }
+    }
+}
+
     post {
         success {
             emailext(
