@@ -4,6 +4,9 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
         DOCKER_IMAGE = 'ahmedaemadra/depi-206' // Replace with your Docker Hub image name
         DOCKER_TAG = "${GIT_COMMIT}"
+        KUBECONFIG_CREDENTIALS = credentials('kubeconfig-id') // Replace with your Kubernetes credentials ID
+        NAMESPACE = 'depi-206' // Kubernetes namespace
+        DEPLOYMENT_NAME = 'simple-flask-app-deployment'
         
     }
     stages {
@@ -56,9 +59,9 @@ pipeline {
         }
     }
     stage('Kubernetes Deployment') {
-    steps {
-        script {
-            withCredentials([file(credentialsId: 'kubeconfig-id', variable: 'KUBECONFIG')]) {
+        steps {
+            script {
+                    withCredentials([file(credentialsId: 'kubeconfig-id', variable: 'KUBECONFIG')]) {
                 sh '''
                     kubectl --kubeconfig=$KUBECONFIG set image deployment/${DEPLOYMENT_NAME} \
                     ${DEPLOYMENT_NAME}=${DOCKER_IMAGE}:${DOCKER_TAG} --namespace=${NAMESPACE}
