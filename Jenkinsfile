@@ -2,14 +2,15 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
-        DOCKER_IMAGE = 'ahmedaemadra/depi-206'
+        DOCKER_IMAGE = 'ahmedaemadra/depi-206' // Replace with your Docker Hub image name
         DOCKER_TAG = "${GIT_COMMIT}"
-        KUBECONFIG_CREDENTIALS = credentials('kubeconfig-id') // Your kubeconfig ID
+        KUBECONFIG_CREDENTIALS = credentials('kubeconfig-id') // Replace with your kubeconfig credentials ID
     }
     stages {
         stage('Build') {
             steps {
                 script {
+                    // Build Docker image
                     sh 'docker build --no-cache -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
                 }
             }
@@ -17,6 +18,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
+                    // Run tests
                     sh 'docker run --rm ${DOCKER_IMAGE}:${DOCKER_TAG} pytest'
                 }
             }
@@ -24,18 +26,22 @@ pipeline {
         stage('Kubernetes Deployment') {
             steps {
                 script {
-                    // Set the KUBECONFIG from the credentials
-                    writeFile(file: '/tmp/kubeconfig', text: "${KUBECONFIG_CREDENTIALS}")
+                    // Write kubeconfig to a file securely
+                    writeFile file: '/tmp/kubeconfig', text: "${KUBECONFIG_CREDENTIALS.getPlainText()}"
                     env.KUBECONFIG = '/tmp/kubeconfig'
 
-                    // Run your kubectl command here, e.g.:
-                    sh "kubectl apply -f k8s/deployment.yaml"
+                    // Verify kubeconfig
+                    sh 'kubectl config view'
+
+                    // Apply Kubernetes deployment
+                    sh 'kubectl apply -f /home/emad/depi-project/simple-flask-app/deployment.yaml' // Update with your deployment file path
                 }
             }
         }
         stage('Stop & Remove Existing Container') {
             steps {
                 script {
+                    // Stop and remove the existing container if it's running
                     sh '''
                         if [ "$(docker ps -q -f name=simple-flask-app)" ]; then
                             docker stop simple-flask-app
@@ -48,6 +54,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                    // Deploy the Docker container
                     sh "docker run -d --name simple-flask-app -p 5000:5000 ${DOCKER_IMAGE}:${DOCKER_TAG}"
                 }
             }
@@ -55,7 +62,9 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
+                    // Log in to Docker Hub
                     sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                    // Push the Docker image
                     sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
                 }
             }
