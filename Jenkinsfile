@@ -35,7 +35,7 @@ pipeline {
                 sh 'kubectl config view'
 
                 // Apply Kubernetes deployment
-                sh 'kubectl apply -f k8s/deployment.yaml' // Update with your deployment file path
+                sh 'kubectl apply -f /home/emad/depi-project/simple-flask-app/deployment.yaml' // Update with your deployment file path
             }
         }
     }
