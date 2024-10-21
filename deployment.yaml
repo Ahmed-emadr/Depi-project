@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Config
+metadata:
+  name: simple-flask-app-deployment
+  namespace: depi-206
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: simple-flask-app
+  template:
+    metadata:
+      labels:
+        app: simple-flask-app
+    spec:
+      containers:
+      - name: simple-flask-app
+        image: ahmedaemadra/depi-206:latest # Update this dynamically in the pipeline
+        ports:
+        - containerPort: 5000
+
