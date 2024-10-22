@@ -13,7 +13,7 @@ CloudWatch: Monitoring and alerting.
 Slack: Notifications on build and deployment status.
 Pipeline Stages
 
-    Build
+    docker build --no-cache -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
 
 Jenkins pulls the source code from GitHub.
 Docker builds the application image from the Dockerfile.
