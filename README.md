@@ -25,6 +25,7 @@ The Docker container runs tests (e.g., pytest).
 If tests fail, Jenkins marks the pipeline as failed and sends an alert.
 
     Push to Docker Hub
+    sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
 
 After successful testing, the Docker image is pushed to Docker Hub using your credentials.
 
@@ -55,7 +56,7 @@ Setup Instructions
 
 bash
 Copy code
-git clone https://github.com/yourusername/your-repo.git
+git clone (https://github.com/Ahmed-emadr/Depi-project.git)
 cd your-repo
 
     Jenkins Configuration
