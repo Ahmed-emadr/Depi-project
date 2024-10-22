@@ -71,6 +71,7 @@ Ensure your Dockerfile is ready for building the application image.
 Verify that Docker is running on your system.
 
     Ansible Playbook
+    ansible-playbook -i inventory.ini deploy.yml
 
 Use the provided Ansible playbook to configure and deploy to your EC2 instance.
 
@@ -102,6 +103,8 @@ AWS EC2 & S3: Cloud infrastructure for hosting the app
 Slack: Team notifications for build and deployment statuses
 CloudWatch: Monitoring performance and generating alerts
 Pipeline Diagram
+
+![image](https://github.com/user-attachments/assets/b13d0513-3eab-4cad-8cec-450675e9273e)
 
 Future Improvements
 Integrate Kubernetes for container orchestration.
