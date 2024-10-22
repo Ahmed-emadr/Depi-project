@@ -26,16 +26,15 @@ pipeline {
         stage('Stop & Remove Existing Container') {
             steps {
                 script {
-                    // Stop and remove the existing container if it's running
-                    sh '''
-                        if [ "$(docker ps -q -f name=simple-flask-app)" ]; then
-                            docker stop simple-flask-app
-                            docker rm simple-flask-app
-                        fi
-                    '''
+                        def containerId = sh(script: "docker ps -q -f name=simple-flask-app", returnStdout: true).trim()
+                        if (containerId) {
+                            sh "docker stop ${containerId}"
+                            sh "docker rm ${containerId}"
+                     }
                 }
             }
-        }
+         }
+
         stage('Deploy') {
             steps {
                 script {
