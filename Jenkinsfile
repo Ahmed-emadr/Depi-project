@@ -4,7 +4,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
         DOCKER_IMAGE = 'ahmedaemadra/depi-206' // Replace with your Docker Hub image name
         DOCKER_TAG = "${GIT_COMMIT}"
-        KUBECONFIG_CREDENTIALS = credentials('kubeconfig-id') // Replace with your kubeconfig credentials ID
+        
     }
     stages {
         stage('Build') {
@@ -23,23 +23,7 @@ pipeline {
                 }
             }
         }
-        stage('Kubernetes Deployment') {
-    steps {
-        script {
-            // Securely write kubeconfig to a file
-            withCredentials([file(credentialsId: 'kubeconfig-id', variable: 'KUBECONFIG_FILE')]) {
-                sh 'cp $KUBECONFIG_FILE /tmp/kubeconfig'
-                env.KUBECONFIG = '/tmp/kubeconfig'
 
-                // Verify kubeconfig
-                sh 'kubectl config view'
-
-                // Apply Kubernetes deployment
-                sh 'kubectl apply -f /home/emad/depi-project/simple-flask-app/deployment.yaml' // Update with your deployment file path
-            }
-        }
-    }
-}
 
         stage('Stop & Remove Existing Container') {
             steps {
