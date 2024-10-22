@@ -2,16 +2,14 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('206') // Replace with your Docker Hub credentials ID
-        DOCKER_IMAGE = 'ahmedaemadra/depi-206' // Replace with your Docker Hub image name
-        DOCKER_TAG = "${GIT_COMMIT}"
-        
+        DOCKER_IMAGE = 'ahmedaemadra/depi-20depi-2066:tagname' // Replace with your Docker Hub image name
     }
     stages {
         stage('Build') {
             steps {
                 script {
                     // Build Docker image
-                    sh 'docker build --no-cache -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+                    sh 'docker build --no-cache -t ${DOCKER_IMAGE} .'
                 }
             }
         }
@@ -26,20 +24,21 @@ pipeline {
         stage('Stop & Remove Existing Container') {
             steps {
                 script {
-                        def containerId = sh(script: "docker ps -q -f name=simple-flask-app", returnStdout: true).trim()
-                        if (containerId) {
-                            sh "docker stop ${containerId}"
-                            sh "docker rm ${containerId}"
-                     }
+                    // Stop and remove the existing container if it's running
+                    sh '''
+                        if [ "$(docker ps -q -f name=simple-flask-app)" ]; then
+                            docker stop simple-flask-app
+                            docker rm simple-flask-app
+                        fi
+                    '''
                 }
             }
-         }
-
+        }
         stage('Deploy') {
             steps {
                 script {
                     // Deploy the Docker container
-                    sh "docker run -d --name simple-flask-app -p 5000:5000 ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    sh "docker run -d --name simple-flask-app -p 5000:5000 ${DOCKER_IMAGE}"
                 }
             }
         }
@@ -49,7 +48,7 @@ pipeline {
                     // Log in to Docker Hub
                     sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
                     // Push the Docker image
-                    sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    sh "docker push ${DOCKER_IMAGE}"
                 }
             }
         }
