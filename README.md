@@ -1,6 +1,10 @@
 Project Overview
 This project demonstrates a CI/CD pipeline for automating the deployment of a containerized application using tools such as Jenkins, Docker, Docker Hub, GitHub, Ansible, and Terraform. The pipeline is designed to build, test, and deploy a Docker container, push it to Docker Hub, and deploy the application on an Amazon EC2 instance. Monitoring is handled using Prometheus, and notifications are sent to Slack.
 
+Pipeline Diagram
+
+![image](https://github.com/user-attachments/assets/b13d0513-3eab-4cad-8cec-450675e9273e)
+
 Key Components:
 Jenkins: Continuous integration and pipeline orchestration.
 Docker: Containerization of the application.
@@ -101,12 +105,58 @@ Terraform: Infrastructure as Code (IaC)
 Prometheus: Monitoring the health of the infrastructure
 AWS EC2 & S3: Cloud infrastructure for hosting the app
 Slack: Team notifications for build and deployment statuses
-CloudWatch: Monitoring performance and generating alerts
-Pipeline Diagram
-
-![image](https://github.com/user-attachments/assets/b13d0513-3eab-4cad-8cec-450675e9273e)
 
 Future Improvements
 Integrate Kubernetes for container orchestration.
 Expand monitoring with Grafana dashboards.
 Improve security by integrating Vault for secrets management.
+
+    Tips & Tricks:
+
+1. SSH Key and Permissions Management:
+
+    Problem: You encountered an error with the SSH key permissions being too open.
+    Solution: Set the proper permissions for SSH keys using chmod 600 your_private_key to avoid this issue.
+    Tip: Always ensure that SSH keys are not world-readable for security.
+
+2. Pipeline Failures:
+
+    Problem: The Jenkins pipeline failed with the error CredentialId could not be found.
+    Solution: Verify that credentials are stored in Jenkins, and properly reference the credentials ID in the pipeline.
+    Tip: Use Jenkins credentials management securely to avoid pipeline disruptions.
+
+3. Docker Warning:
+
+    Problem: "DEPRECATED: The legacy builder is deprecated."
+    Solution: Install buildx for Docker to leverage BuildKit, which offers improved features for building images.
+    Tip: Regularly check for deprecated features and update tools accordingly to avoid future issues.
+
+4. Root Warning in Docker Builds:
+
+    Problem: Warning about running pip as the root user.
+    Solution: Use a virtual environment or add --root-user-action=ignore if running in a controlled environment.
+    Tip: For production-grade builds, avoid using the root user in Docker containers.
+
+5. Python Deprecation Warnings (Pytest):
+
+    Problem: Deprecation warnings about ast.Str in Python 3.14.
+    Solution: Keep an eye on the Python version you are using, and update your code to adapt to the latest changes.
+    Tip: Regularly review library and language updates to ensure compatibility.
+
+6. Docker Cleanup in Jenkins Pipeline:
+
+    Problem: The pipeline uses a container from a previous run, which might cause conflicts.
+    Solution: Use docker ps -q -f name=container_name to check if a container exists, and remove it if necessary before starting a new one.
+    Tip: Always clean up containers to ensure fresh deployments.
+
+7. Automating Docker Push to Docker Hub:
+
+    Problem: The push to Docker Hub was skipped due to a previous failure.
+    Solution: Ensure all steps before pushing the image succeed, especially commits and credentials.
+    Tip: Add conditional stages to handle errors gracefully, ensuring that the pipeline can continue or retry certain steps.
+
+8. Jenkins Git Integration:
+
+    Problem: Commit failed because there were no changes to commit.
+    Solution: Use git status to check for changes before committing.
+    Tip: Automate Git commands only when changes exist to avoid unnecessary failures.
