@@ -19,12 +19,10 @@ pipeline {
             steps {
                 script {
                     // Run tests
-                    sh 'docker run --rm ${DOCKER_IMAGE}:${DOCKER_TAG} pytest'
+                    sh 'docker run --rm ${DOCKER_IMAGE} pytest'
                 }
             }
         }
-
-
         stage('Stop & Remove Existing Container') {
             steps {
                 script {
